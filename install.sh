@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ln -snf /usr/share/zoneinfo/Asia/Taipei /etc/localtime && echo Asia/Taipei > /etc/timezone
+
 apt-get update --fix-missing
 apt-get install -y curl net-tools
 
