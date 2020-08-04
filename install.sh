@@ -4,7 +4,7 @@ apt-get update --fix-missing
 apt-get install -y curl net-tools
 
 
-curl -o xampp-linux-installer.run "https://downloadsapachefriends.global.ssl.fastly.net/7.4.8/xampp-linux-x64-7.4.8-0-installer.run?from_af=true"
+curl -o xampp-linux-installer.run "https://nchc.dl.sourceforge.net/project/xampp/XAMPP%20Linux/7.4.8/xampp-linux-x64-7.4.8-0-installer.run"
 chmod +x xampp-linux-installer.run
 bash -c './xampp-linux-installer.run'
 ln -sf /opt/lampp/lampp /usr/bin/lampp
