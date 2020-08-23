@@ -9,7 +9,8 @@ apt-get install -y curl net-tools wget vim dialog software-properties-common  na
 curl -o xampp-linux-installer.run "https://master.dl.sourceforge.net/project/xampp/XAMPP%20Linux/7.2.33/xampp-linux-x64-7.2.33-0-installer.run"
 chmod +x xampp-linux-installer.run
 bash -c './xampp-linux-installer.run'
-ln -sf /opt/lampp/lampp /usr/bin/lampp
+ln -sf /opt/lampp/lampp /usr/bin/
+ln -sf /opt/lampp/bin/mysql /usr/bin/ 
 
 curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 
