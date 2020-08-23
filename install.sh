@@ -3,14 +3,42 @@
 ln -snf /usr/share/zoneinfo/Asia/Taipei /etc/localtime && echo Asia/Taipei > /etc/timezone
 
 apt-get update --fix-missing
-apt-get install -y curl net-tools
+apt-get install -y curl net-tools wget vim dialog software-properties-common  nano less unzip
 
 
-curl -o xampp-linux-installer.run "https://nchc.dl.sourceforge.net/project/xampp/XAMPP%20Linux/7.4.8/xampp-linux-x64-7.4.8-0-installer.run"
+curl -o xampp-linux-installer.run "https://master.dl.sourceforge.net/project/xampp/XAMPP%20Linux/7.2.33/xampp-linux-x64-7.2.33-0-installer.run"
 chmod +x xampp-linux-installer.run
 bash -c './xampp-linux-installer.run'
 ln -sf /opt/lampp/lampp /usr/bin/lampp
 
+curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+
+#Download appropriate package for the OS version
+#Choose only ONE of the following, corresponding to your OS version
+
+#Ubuntu 20.04
+curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/18.04/mssql-server-2019.list)"
+apt-get update
+ACCEPT_EULA=Y apt-get install -y msodbcsql17 mssql-server
+# optional: for bcp and sqlcmd
+ACCEPT_EULA=Y apt-get install -y mssql-tools
+echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+source ~/.bashrc
+# optional: for unixODBC development headers
+apt-get install -y unixodbc-dev
+
+pecl install sqlsrv
+pecl install pdo_sqlsrv
+
+printf "; priority=20\nextension=sqlsrv.so\n" > /opt/lampp/etc/php/7.2/mods-available/sqlsrv.ini
+printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /opt/lampp/etc/php/7.2/mods-available/pdo_sqlsrv.ini
+
+phpenmod sqlsrv pdo_sqlsrv
+a2dismod mpm_event
+a2enmod mpm_prefork
+a2enmod php7.2
 
 
 # Enable XAMPP web interface(remove security checks)
@@ -44,7 +72,5 @@ sed -ri 's/PermitRootLogin without-password/PermitRootLogin yes/g' /etc/ssh/sshd
 # password hash generated using this command: openssl passwd -1 -salt xampp root
 sed -ri 's/root\:\*/root\:\$1\$xampp\$5\/7SXMYAMmS68bAy94B5f\./g' /etc/shadow
 
-# Few handy utilities which are nice to have
-apt-get -y install nano vim less unzip wget --no-install-recommends
 
 apt-get clean
